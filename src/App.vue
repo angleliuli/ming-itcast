@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    项目开始啦
+    项目开始
   </div>
 </template>
 
