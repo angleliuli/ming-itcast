@@ -10,3 +10,6 @@ export const login = data => {
     data
   })
 }
+
+// 获取用户数据列表
+export const getUserList = obj => axios.get('users', { params: obj })

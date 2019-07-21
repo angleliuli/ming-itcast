@@ -18,7 +18,7 @@
               <i class="el-icon-location"></i>
               <span>用户管理</span>
             </template>
-            <el-menu-item index="1-1">
+            <el-menu-item index="/home/users">
               <template slot="title">
                 <i class="el-icon-location"></i>
                 <span>用户列表</span>
@@ -63,7 +63,9 @@
           <span class="system-title">电商后台管理系统</span>
           <a href="/login" class="welcome">退出</a>
         </el-header>
-        <el-main>Main</el-main>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
