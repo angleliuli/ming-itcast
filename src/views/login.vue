@@ -30,7 +30,7 @@
 </template>
 
 <script>
-// 引入api文件
+// 引入api
 import { login } from '@/api/user_index.js'
 
 export default {
