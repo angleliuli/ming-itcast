@@ -9,6 +9,19 @@ import '@/styles/index.less'
 // 引入路由管理
 import router from '@/router/index.js'
 
+// 注册导航守卫
+router.beforeEach((to, from, next) => {
+  // 获取 token 值
+  var token = localStorage.getItem('itcast_ming_token')
+  if (token || to.path === '/login') {
+    next()
+  } else {
+    next({
+      path: '/login'
+    })
+  }
+})
+
 // 让vue使用element-ui
 Vue.use(ElementUI)
 

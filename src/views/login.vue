@@ -62,6 +62,8 @@ export default {
             .then(res => {
               console.log(res)
               if (res.data.meta.status === 200) {
+                // 在跳转页面之前，通过本地存储设置 token 值
+                localStorage.setItem('itcast_ming_token', res.data.data.token)
                 // 验证通过，跳转到首页
                 this.$router.push({ name: 'home' })
               } else {
