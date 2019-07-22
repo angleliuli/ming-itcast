@@ -10,7 +10,7 @@ import Home from '@/views/home.vue'
 // 引入欢迎组件
 import Welcome from '@/views/welcome.vue'
 // 引入用户列表组件
-import Users from '@/views/users.vue'
+import User from '@/views/users/user.vue'
 
 // 让vue使用router路由管理
 Vue.use(VueRouter)
@@ -42,9 +42,9 @@ var router = new VueRouter({
         component: Welcome
       },
       {
-        name: 'users',
-        path: 'users',
-        component: Users
+        name: 'User',
+        path: 'User',
+        component: User
       }
     ]
   }
