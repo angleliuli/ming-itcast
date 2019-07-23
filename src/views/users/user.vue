@@ -30,7 +30,12 @@
       <el-table-column prop="mobile" label="电话"></el-table-column>
       <el-table-column label="状态" width="80">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949" @change='changeStatu(scope.row.id,scope.row.mg_state)'></el-switch>
+          <el-switch
+            v-model="scope.row.mg_state"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="changeStatu(scope.row.id,scope.row.mg_state)"
+          ></el-switch>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="260">
@@ -39,7 +44,7 @@
             <el-button type="primary" icon="el-icon-edit" @click="editSubmit(scope.row)"></el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="dark" content="分配角色" placement="top-start">
-            <el-button type="primary" icon="el-icon-share"></el-button>
+            <el-button type="primary" icon="el-icon-share" @click="allotSubmit(scope.row)"></el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="dark" content="删除" placement="top-start">
             <el-button type="primary" icon="el-icon-delete" @click="delUser(scope.row.id)"></el-button>
@@ -101,14 +106,48 @@
         <el-button type="primary" @click="editUser">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 分配角色对话框 -->
+    <el-dialog title="分配角色" :visible.sync="allotdialogFormVisible">
+      <el-form :model="allotform" :label-width="'80px'" ref="allotformRef">
+        <el-form-item label="用户名：">
+          <span>{{allotform.username}}</span>
+        </el-form-item>
+        <el-form-item label="角色：">
+          <el-select v-model="allotform.rid" clearable placeholder="请选择">
+            <el-option
+              v-for="item in roleList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="allotdialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="allotUserRole">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getUserList, addUserList, delUserList, editUserList, updateUserState } from '@/api/user_index.js'
+import {
+  getUserList,
+  addUserList,
+  delUserList,
+  editUserList,
+  updateUserState,
+  allotUserRoleById
+} from '@/api/user_index.js'
+import { getAllRoleList } from '@/api/role_index.js'
 export default {
   data () {
     return {
+      // 分配角色对话框控制显示隐藏
+      allotdialogFormVisible: false,
       // 添加用户对话框控制显示隐藏
       adddialogFormVisible: false,
       // 编辑用户对话框控制显示隐藏
@@ -116,6 +155,13 @@ export default {
       status: true,
       // 用户数据总条数
       total: 0,
+      // 分配角色数据
+      allotform: {
+        username: '',
+        rid: '',
+        id: ''
+      },
+      roleList: [],
       // 添加用户表单数据
       addform: {
         username: '',
@@ -223,7 +269,10 @@ export default {
                   type: 'success',
                   message: '删除成功!'
                 })
-                if (Math.ceil((this.total - 1) / this.userObj.pagesize) < this.userObj.pagenum) {
+                if (
+                  Math.ceil((this.total - 1) / this.userObj.pagesize) <
+                  this.userObj.pagenum
+                ) {
                   this.userObj.pagenum--
                 }
                 this.init()
@@ -270,11 +319,36 @@ export default {
         this.editdialogFormVisible = false
         this.init()
       }
+    },
+    // 展示分配角色对话框默认数据
+    allotSubmit (row) {
+      this.allotdialogFormVisible = true
+      this.allotform.username = row.username
+      this.allotform.rid = row.rid
+      this.allotform.id = row.id
+    },
+    // 获取角色列表
+    async getAllRole () {
+      let res = await getAllRoleList()
+      this.roleList = res.data.data
+    },
+    // 分配用户角色
+    async allotUserRole () {
+      let res = await allotUserRoleById(this.allotform.id, this.allotform.rid)
+      if (res.data.meta.status === 200) {
+        this.$message({
+          type: 'success',
+          message: res.data.meta.msg
+        })
+        this.allotdialogFormVisible = false
+        this.init()
+      }
     }
   },
   mounted () {
     // 初始化表格数据
     this.init()
+    this.getAllRole()
   }
 }
 </script>

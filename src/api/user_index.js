@@ -25,3 +25,6 @@ export const editUserList = obj => axios.put(`users/${obj.id}`, obj)
 
 // 修改用户状态
 export const updateUserState = (id, type) => axios.put(`users/${id}/state/${type}`)
+
+// 分配用户角色
+export const allotUserRoleById = (id, rid) => axios.put(`users/${id}/role`, { rid: rid })
